@@ -3,10 +3,312 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schedulix</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>Automated Exam Seating Planner</title>
+    <link rel="stylesheet" href="css\style.css">
 </head>
 <body>
-    <script src="assets/js/script.js"></script>
+    <header>
+        <h1>🎓 Automated Exam Seating Planner</h1>
+        <p>Streamline exam organization with intelligent seat allocation</p>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('students')">Students</button>
+            <button class="tab" onclick="switchTab('rooms')">Rooms</button>
+            <button class="tab" onclick="switchTab('exams')">Exam Sessions</button>
+            <button class="tab" onclick="switchTab('generate')">Generate Seating</button>
+            <button class="tab" onclick="switchTab('results')">View Results</button>
+            <button class="tab" onclick="switchTab('data')">💾 Data Manager</button>
+        </div>
+
+        <!-- Students Tab -->
+        <div id="students" class="tab-content active">
+            <div class="card">
+                <h2>Student Management</h2>
+                <div class="form-group">
+                    <label>Roll Number</label>
+                    <input type="text" id="rollNo" placeholder="e.g., 21CS001">
+                </div>
+                <div class="form-group">
+                    <label>Student Name</label>
+                    <input type="text" id="studentName" placeholder="e.g., John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Department</label>
+                    <select id="department">
+                        <option value="CSE">Computer Science (CSE)</option>
+                        <option value="ECE">Electronics (ECE)</option>
+                        <option value="MECH">Mechanical (MECH)</option>
+                        <option value="CIVIL">Civil (CIVIL)</option>
+                        <option value="EEE">Electrical (EEE)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Subject Codes (comma separated)</label>
+                    <input type="text" id="subjects" placeholder="e.g., CS301, CS302, MA301">
+                </div>
+                <div class="flex-buttons">
+                    <button class="btn btn-primary" onclick="addStudent()">Add Student</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('csvFileInput').click()">📁 Import CSV</button>
+                    <input type="file" id="csvFileInput" accept=".csv" style="display: none;" onchange="importCSV(event)">
+                </div>
+                <div style="margin-top: 16px; padding: 12px; background: var(--color-bg-1); border-radius: 8px; font-size: 0.875rem;">
+                    <strong>CSV Format:</strong> RollNo, Name, Department, Subjects<br>
+                    <em>Example: 21CS001, John Doe, CSE, CS301;CS302;MA301</em>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Student List</h2>
+                <div id="studentAlert"></div>
+                <table id="studentTable">
+                    <thead>
+                        <tr>
+                            <th>Roll No</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Subjects</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTableBody">
+                        <tr>
+                            <td colspan="5" class="empty-state">
+                                <div class="empty-state-icon">📚</div>
+                                <div>No students added yet</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Rooms Tab -->
+        <div id="rooms" class="tab-content">
+            <div class="card">
+                <h2>Room Configuration</h2>
+                <div class="form-group">
+                    <label>Room ID</label>
+                    <input type="text" id="roomId" placeholder="e.g., R101">
+                </div>
+                <div class="form-group">
+                    <label>Room Name</label>
+                    <input type="text" id="roomName" placeholder="e.g., Hall A">
+                </div>
+                <div class="form-group">
+                    <label>Capacity</label>
+                    <input type="number" id="capacity" placeholder="e.g., 60" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Rows</label>
+                    <input type="number" id="rows" placeholder="e.g., 10" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Seats per Row</label>
+                    <input type="number" id="seatsPerRow" placeholder="e.g., 6" min="1">
+                </div>
+                <div class="flex-buttons">
+                    <button class="btn btn-primary" onclick="addRoom()">Add Room</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('roomCsvInput').click()">📁 Import CSV</button>
+                    <input type="file" id="roomCsvInput" accept=".csv" style="display: none;" onchange="importRoomCSV(event)">
+                </div>
+                <div style="margin-top: 16px; padding: 12px; background: var(--color-bg-1); border-radius: 8px; font-size: 0.875rem;">
+                    <strong>CSV Format:</strong> RoomID, RoomName, Capacity, Rows, SeatsPerRow<br>
+                    <em>Example: R101, Hall A, 60, 10, 6</em>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Available Rooms</h2>
+                <div id="roomAlert"></div>
+                <table id="roomTable">
+                    <thead>
+                        <tr>
+                            <th>Room ID</th>
+                            <th>Name</th>
+                            <th>Capacity</th>
+                            <th>Layout</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="roomTableBody">
+                        <tr>
+                            <td colspan="5" class="empty-state">
+                                <div class="empty-state-icon">🏛️</div>
+                                <div>No rooms configured yet</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Exams Tab -->
+        <div id="exams" class="tab-content">
+            <div class="card">
+                <h2>Create Exam Session</h2>
+                <div class="form-group">
+                    <label>Subject Code</label>
+                    <input type="text" id="examSubject" placeholder="e.g., CS301">
+                </div>
+                <div class="form-group">
+                    <label>Subject Name</label>
+                    <input type="text" id="examSubjectName" placeholder="e.g., Data Structures">
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="examDate">
+                </div>
+                <div class="form-group">
+                    <label>Time</label>
+                    <input type="time" id="examTime">
+                </div>
+                <div class="flex-buttons">
+                    <button class="btn btn-primary" onclick="addExam()">Create Exam Session</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('examCsvInput').click()">📁 Import CSV</button>
+                    <input type="file" id="examCsvInput" accept=".csv" style="display: none;" onchange="importExamCSV(event)">
+                </div>
+                <div style="margin-top: 16px; padding: 12px; background: var(--color-bg-1); border-radius: 8px; font-size: 0.875rem;">
+                    <strong>CSV Format:</strong> SubjectCode, SubjectName, Date, Time<br>
+                    <em>Example: CS301, Data Structures, 2025-11-15, 09:00</em>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Scheduled Exams</h2>
+                <div id="examAlert"></div>
+                <table id="examTable">
+                    <thead>
+                        <tr>
+                            <th>Subject Code</th>
+                            <th>Subject Name</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="examTableBody">
+                        <tr>
+                            <td colspan="5" class="empty-state">
+                                <div class="empty-state-icon">📝</div>
+                                <div>No exams scheduled yet</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Generate Tab -->
+        <div id="generate" class="tab-content">
+            <div class="card">
+                <h2>Generate Seating Arrangement</h2>
+                <div class="form-group">
+                    <label>Select Exam Session</label>
+                    <select id="selectExamSession">
+                        <option value="">-- Select an exam --</option>
+                    </select>
+                </div>
+                <div class="flex-buttons">
+                    <button class="btn btn-primary" onclick="generateSeating()">🎲 Generate Seating</button>
+                    <button class="btn btn-primary" onclick="generateAllSeating()" style="background: linear-gradient(135deg, var(--color-teal-500), var(--color-teal-600));">🚀 Generate All Exams</button>
+                    <button class="btn btn-secondary" onclick="detectConflicts()">⚠️ Check Conflicts</button>
+                </div>
+                <div id="generateAlert" style="margin-top: 20px;"></div>
+            </div>
+
+            <div class="card" id="statsCard" style="display: none;">
+                <h2>Generation Statistics</h2>
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="statStudents">0</div>
+                        <div class="stat-label">Students Allocated</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statRooms">0</div>
+                        <div class="stat-label">Rooms Used</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statCapacity">0%</div>
+                        <div class="stat-label">Capacity Utilized</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Tab -->
+        <div id="results" class="tab-content">
+            <div class="card">
+                <h2>Seating Results</h2>
+                <div class="flex-buttons" style="margin-bottom: 20px;">
+                    <button class="btn btn-secondary" onclick="showRoomWise()">Room-wise View</button>
+                    <button class="btn btn-secondary" onclick="showHallTickets()">Hall Tickets</button>
+                    <button class="btn btn-secondary" onclick="showStatistics()">📊 Analytics</button>
+                    <button class="btn btn-secondary" onclick="exportSeatingPlan()">📄 Export PDF</button>
+                    <button class="btn btn-secondary" onclick="showAttendanceSheet()">📋 Attendance</button>
+                    <button class="btn btn-secondary" onclick="showPrintableSeatingChart()">Printable Seating Charts</button>
+                </div>
+                <div id="resultsContent">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎯</div>
+                        <div>Generate seating arrangement first</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Manager Tab -->
+        <div id="data" class="tab-content">
+            <div class="card">
+                <h2>💾 Data Management</h2>
+                <p style="color: var(--color-slate-500); margin-bottom: 20px;">
+                    All your data is automatically saved to your browser's local storage. You can export backups or clear all data below.
+                </p>
+                
+                <div class="stats" style="margin-bottom: 30px;">
+                    <div class="stat-card">
+                        <div class="stat-value" id="dataStudentCount">0</div>
+                        <div class="stat-label">Students Saved</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="dataRoomCount">0</div>
+                        <div class="stat-label">Rooms Saved</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="dataExamCount">0</div>
+                        <div class="stat-label">Exams Saved</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="dataAllocationCount">0</div>
+                        <div class="stat-label">Allocations Saved</div>
+                    </div>
+                </div>
+
+                <div class="flex-buttons">
+                    <button class="btn btn-primary" onclick="exportData()">📥 Export Backup</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('importDataFile').click()">📤 Import Backup</button>
+                    <input type="file" id="importDataFile" accept=".json" style="display: none;" onchange="importData(event)">
+                    <button class="btn btn-danger" onclick="clearAllData()">🗑️ Clear All Data</button>
+                </div>
+
+                <div style="margin-top: 30px; padding: 20px; background: var(--color-bg-1); border-radius: 8px; border-left: 4px solid var(--color-teal-500);">
+                    <h3 style="margin-bottom: 15px; color: var(--color-teal-500);">ℹ️ How It Works</h3>
+                    <ul style="line-height: 2; color: var(--color-slate-900);">
+                        <li><strong>Auto-Save:</strong> All data is automatically saved to your browser whenever you add, edit, or delete items</li>
+                        <li><strong>Persistent Storage:</strong> Data remains even after closing the browser (stored in localStorage)</li>
+                        <li><strong>Export Backup:</strong> Download a JSON file with all your data for backup purposes</li>
+                        <li><strong>Import Backup:</strong> Restore data from a previously exported JSON file</li>
+                        <li><strong>Clear Data:</strong> Remove all data from local storage (use with caution!)</li>
+                    </ul>
+                </div>
+
+                <div style="margin-top: 20px; padding: 15px; background: rgba(var(--color-teal-500-rgb), 0.1); border-radius: 8px;">
+                    <strong>💡 Tip:</strong> Export backups regularly to prevent data loss. You can use the backup file to transfer data between browsers or devices.
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js\script.js"></script>
 </body>
 </html>

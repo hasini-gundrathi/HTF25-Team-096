@@ -75,6 +75,8 @@ A smart, single-page web application designed to streamline exam seating arrange
 
 ## CSV Import Format
 
+Sample csv files for data are included in the data folder
+
 ### Students CSV
 ```csv
 RollNo,Name,Department,SubjectCodes

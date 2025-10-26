@@ -1,0 +1,6 @@
+RoomID,RoomName,Capacity,Rows,SeatsPerRow
+R101,Main Hall,60,10,6
+R102,Lab Block,40,8,5
+R103,Seminar Room,24,6,4
+R104,Auditorium,100,20,5
+R105,Side Wing,30,6,5

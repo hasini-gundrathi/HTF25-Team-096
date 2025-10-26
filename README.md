@@ -1,68 +1,174 @@
-﻿# HTF25-Team-096
+﻿# Schedulix
 
-## GitHub submission guide
+A smart, single-page web application designed to streamline exam seating arrangements for colleges and universities. The system automates seat allocation, generates hall tickets, and provides comprehensive analytics—all while working completely offline with local storage persistence.
 
-In this Readme, you will find a guide on how to fork this Repository, add files to it, and make a pull request to contribute your changes.
+## Features
 
-<details open>
-<summary><h3>1. Login to your GitHub Account</h3></summary>
-<br>
-<p>Go to <a href="https://github.com">github.com</a> to log in.</p>
-<ul>
-   <li>Open the <a href="https://github.com/cbitosc/HTF25-Team-096">current repo</a> in a new tab.</li>
-   <li>Perform all operations in the newly opened tab, and follow the current tab for instructions.</li>
-</ul>
-</details>
+### Student Management
+- Add students manually or via CSV bulk import
+- Store roll number, name, department, and subject registrations
+- Automatic duplicate detection and validation
+- Smart CSV format detection (prevents wrong data imports)
 
-<details open>
-<summary><h3>2. Fork the Repository</h3></summary>
-<br>
-<p align="center">
-  <img src="fork.jpeg" alt="Fork the Repository" height="300">
-</p>
-<ul>
- <li>In the newly opened tab, on the top-right corner, click on <b>Fork</b>.</li>
- <li>Enter the <b>Repository Name</b> as <b>HTF25-Team-096</b>.</li>
- <li>Then click <b>Create Fork</b>, leaving all other fields as default.</li>
- <li>After a few moments, you can view your forked repo.</li>
-</ul>
-</details>
+### Room Configuration
+- Configure multiple exam halls with capacity and layout
+- Define rows and seats per row for visual seating grids
+- CSV import for quick room setup
+- Real-time capacity tracking
 
-<details open>
-<summary><h3>3. Clone your Repository</h3></summary>
-<br>
-<ul>
- <li>Click on <b>Code</b> and from the dropdown menu copy your <b>web URL</b> of your forked repository.</li>
- <li>Now open terminal on your local machine.</li>
- <li>Run this command to clone the repo:</li>
-<pre><code>git clone https://github.com/your-username/HTF25-Team-096.git</code></pre>
-</ul>
-</details>
+### Exam Session Scheduling
+- Schedule exams with subject codes, dates, and times
+- CSV import for bulk exam creation
+- Automatic conflict detection for overlapping exams
+- Multi-exam management
 
-<details open>
-<summary><h3>4. Adding files to the Repository</h3></summary>
-<br>
-<ul>
- <li>While doing it for the first time, create a new branch for your changes:</li>
-<pre><code>git checkout -b branch-name</code></pre>
- <li>Add your files or make modifications to existing files.</li>
- <li>Stage your changes:</li>
-<pre><code>git add .</code></pre>
- <li>Commit your changes:</li>
-<pre><code>git commit -m "Descriptive commit message"</code></pre>
- <li>Push your branch to your fork:</li>
-<pre><code>git push origin branch-name</code></pre>
-</ul>
-</details>
+### Intelligent Seating Generation
+- **Smart Distribution:** Automatically distributes students across all available rooms evenly
+- **Optimized Spacing:** Uses strategic seat spacing instead of consecutive allocation for better exam integrity
+- **Multi-Exam Support:** Generate seating for all exams at once with a single click
+- Real-time capacity utilization statistics
 
-<details open>
-<summary><h3>5. Create a Pull Request</h3></summary>
-<br>
-<ul>
- <li>Click on the <b>Contribute</b> button in your fork and choose <b>Open Pull Request</b>.</li>
- <li>Leave all fields as default, then click <b>Create Pull Request</b>.</li>
- <li>Wait a few moments; your PR is now submitted.</li>
-</ul>
-</details>
+### Hall Ticket Generation
+- Individual hall tickets for each student-exam pair
+- Professional printable format with exam instructions
+- One-click print functionality
+- Consolidated view for students with multiple exams
 
-## Thanks for participating!
+### Analytics Dashboard
+- Department-wise student distribution
+- Room utilization percentages with color-coded status indicators
+- Exam-wise enrollment statistics
+- Visual stat cards with hover effects
+
+### Export & Reporting
+- **PDF Export:** Professional seating plan reports with print dialog
+- **Attendance Sheets:** Organized by date, time, and room with checkboxes for marking attendance
+- **Room-wise View:** Interactive seating grid visualization
+- Individual sheet printing for invigilators
+
+### Data Persistence
+- **Local Storage:** All data automatically saved to browser
+- **Backup/Restore:** Export and import complete system state as JSON
+- **CSV Import:** Bulk data import for students, rooms, and exams
+- Data validation and format checking
+
+### Modern UI/UX
+- Responsive design with mobile support
+- Smooth animations and transitions
+- Gradient effects and hover interactions
+- Color-coded status indicators
+- Tab-based navigation
+
+## Quick Start
+
+### Installation
+1. Download the `index.html`, `style.css`, `script.js` files
+2. Open it in any modern web browser
+3. Start adding your data!
+
+### Usage Flow
+1. **Add Rooms** → Configure exam halls with capacity
+2. **Add Students** → Import via CSV or add manually
+3. **Schedule Exams** → Create exam sessions with dates/times
+4. **Generate Seating** → Click "Generate All Exams" for instant allocation
+5. **View Results** → Access hall tickets, attendance sheets, and analytics
+
+## CSV Import Format
+
+### Students CSV
+```csv
+RollNo,Name,Department,SubjectCodes
+21CS001,Alice Johnson,CSE,CS301;CS302;MA301
+21CS002,Bob Smith,CSE,CS301;MA301
+```
+
+### Rooms CSV
+```csv
+RoomID,RoomName,Capacity,Rows,SeatsPerRow
+R101,Main Hall,60,10,6
+R102,Lab Block,40,8,5
+```
+
+### Exams CSV
+```csv
+SubjectCode,SubjectName,Date,Time
+CS301,Data Structures,2025-11-15,09:00 AM
+MA301,Mathematics III,2025-11-16,09:00 AM
+```
+
+## Data Validation
+
+The system includes intelligent validation to prevent errors:
+- **Format Detection:** Automatically detects if wrong CSV type is uploaded
+- **Duplicate Prevention:** Checks for existing records before import
+- **Conflict Detection:** Warns about scheduling conflicts
+- **Capacity Checks:** Alerts when student count exceeds available seats
+
+## Key Algorithms
+
+### Seating Allocation Strategy
+1. **Even Distribution:** Students distributed evenly across all available rooms
+2. **Strategic Spacing:** Seats allocated with calculated spacing (not consecutively) for better distancing
+3. **Capacity Optimization:** Smart utilization of room capacity with overflow prevention
+4. **Department Mixing:** Natural mixing across departments for exam integrity
+
+### Conflict Detection
+- Identifies students with overlapping exam schedules
+- Checks for same date/time exam conflicts
+- Provides detailed conflict reports with student information
+
+## Technical Stack
+
+- **Frontend:** Pure HTML5, CSS3, JavaScript (ES6+)
+- **Storage:** Browser LocalStorage API
+- **Architecture:** Single-page application (SPA)
+- **No Dependencies:** Works offline, no external libraries required
+
+## Browser Compatibility
+
+- ✅ Chrome/Edge (Recommended)
+- ✅ Firefox
+- ✅ Safari
+- ✅ Opera
+
+## Privacy & Security
+
+- **100% Local:** All data stored in your browser only
+- **No Server:** No data sent to external servers
+- **Offline Capable:** Works completely without internet
+- **Export Control:** You control all data exports and backups
+
+## Design System
+
+- Custom CSS variables for theming
+- Gradient effects and shadows
+- Smooth cubic-bezier transitions
+- Accessible color contrasts
+- Responsive grid layouts
+
+## Documentation
+
+All features are self-explanatory with:
+- Inline format guides
+- Sample CSV format examples
+- Tooltips and help sections
+- Clear error messages
+
+## Contributing
+
+This is an open-source educational project. Feel free to:
+- Report bugs
+- Suggest features
+- Submit improvements
+
+## License
+
+Free to use for educational and non-commercial purposes.
+
+## Credits
+
+Developed as a solution for **PS52: Automated Exam Seating Planner** - an intermediate-level college automation project.
+
+---
+
+**Made with 💙 for CBIT Hacktober'25.**
